@@ -70,8 +70,12 @@ def main(default=True, path=default_path):
 
     folder = lib.get_path(os.path.realpath(__file__))
     list_of_dbs = list(filter(lambda name: ".json" in name, os.listdir(folder)))
+    if len(list_of_dbs):
+        fullpath = folder + "/" + ui_choice(list_of_dbs)
+    else:
+        lib.create_empty(path)
+        fullpath = folder + "/" + "backup.json"
 
-    fullpath = folder + "/" + ui_choice(list_of_dbs)
     flow(
         default,
         fullpath
