@@ -7,6 +7,18 @@ default_path = "./backup.json"
 class Options:
     options = ["today", "print", "print stats", "backup", "exit"]
 
+def continuos_data_load(path): #! DANGER
+    data = lib.load_data(path)
+    # loop over days from jan
+    for month in range(3, 5):
+        for days in range(1, 32):
+            try:
+                day = str(datetime.date(2023, month, days))
+                print(day)
+                fill(data, day, user_fill())
+            except:
+                continue
+    lib.dump_data(data, path)
 
 # ---------- user handling ---------- #
 
