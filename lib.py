@@ -96,7 +96,7 @@ def stats(data):
     s["bad days"] = s["total days"] - s["good days"]
 
     # this it the total ratio, add last 6 months, last 8 weeks, last 4 weeks
-    time_ranges = [ ("total" , total), ( "6 months", 6 * DatesConstants.MONTH), ("12 weeks", 12 * DatesConstants.WEEK), ("8 weeks", 8 * DatesConstants.WEEK), ("4 weeks", 4 * DatesConstants.WEEK) ]
+    time_ranges = [ ("total" , total), ( "6 months", 6 * DatesConstants.MONTH), ("12 weeks", 12 * DatesConstants.WEEK), ("8 weeks", 8 * DatesConstants.WEEK), ("4 weeks", 4 * DatesConstants.WEEK), ("2 weeks", 2 * DatesConstants.WEEK)]
     for descriptor, time_range in time_ranges:
         if not time_range > total:
             good_days =  good_over_range(data, time_range)
@@ -118,3 +118,7 @@ def stats(data):
     for key in s:
         print(f"{key}: {s[key]}")
 
+# ---------- backups ---------- #
+
+def backup(data):
+    lib.dump_data(data, "backup1.json")
