@@ -89,6 +89,7 @@ def stats(data):
         print("No data")
         return
 
+
     total = len(data)
     s = {}
     s["total days"] = total
@@ -103,17 +104,18 @@ def stats(data):
             ratio = (good_days, time_range - good_days)
             s[f"{descriptor} good/bad ratio"] = f"{round( good_days * 100 / time_range, 2)}% -> {ratio}"
 
+    streaks = []
     total_counter = 0
-    max = 0
     for key in data:
         value = data[key]
         if value:
             total_counter += 1
         else:
-            if total_counter > max:
-                max = total_counter
+            streaks.append(total_counter)
             total_counter = 0
-    s["max streak"] = max
+    
+    s["average streak"] = round( sum(streaks) / len(streaks) )
+    s["max streak"] = max(streaks)
     
     for key in s:
         print(f"{key}: {s[key]}")
