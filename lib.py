@@ -89,14 +89,15 @@ def stats(data):
         print("No data")
         return
 
-
-    total = len(data)
     s = {}
+
+    # totals
+    total = len(data)
     s["total days"] = total
     s["good days"] = good_over_range(data, total)
     s["bad days"] = s["total days"] - s["good days"]
 
-    # this it the total ratio, add last 6 months, last 8 weeks, last 4 weeks
+    # good days over a time range # TODO put time ranges in a config file
     time_ranges = [ ("total" , total), ( "6 months", 6 * DatesConstants.MONTH), ("12 weeks", 12 * DatesConstants.WEEK), ("8 weeks", 8 * DatesConstants.WEEK), ("4 weeks", 4 * DatesConstants.WEEK), ("2 weeks", 2 * DatesConstants.WEEK)]
     for descriptor, time_range in time_ranges:
         if not time_range > total:
@@ -104,6 +105,7 @@ def stats(data):
             ratio = (good_days, time_range - good_days)
             s[f"{descriptor} good/bad ratio"] = f"{round( good_days * 100 / time_range, 2)}% -> {ratio}"
 
+    # consecutive days counter 
     streaks = []
     total_counter = 0
     for key in data:
@@ -117,6 +119,7 @@ def stats(data):
     s["average streak"] = round( sum(streaks) / len(streaks) )
     s["max streak"] = max(streaks)
     
+    # printing
     for key in s:
         print(f"{key}: {s[key]}")
 
