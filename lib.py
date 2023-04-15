@@ -60,6 +60,21 @@ def good_over_range(calendar_dict, days):
             good_counter += 1
     return good_counter
     
+def get_consecutives(data):
+    ordered_keys = sorted(data)
+    streaks = []
+    counter = 0
+    for key in ordered_keys:
+        value = data[key]
+        if value:
+            counter += 1
+        else:
+            if counter != 0: streaks.append(counter) # consecutive bad days are not counting
+            counter = 0
+    if value: streaks.append(counter) # covers the case "last one was positive and we are in the current streak"
+
+    return streaks if len(streaks) != 0 else [0] # covers the case of no good days
+
 # ---------- output ---------- #
 
 def print_as_calendar(calendar_dict):
@@ -105,16 +120,8 @@ def stats(data):
             ratio = (good_days, time_range - good_days)
             stats[f"{descriptor} good/bad ratio"] = f"{round( good_days * 100 / time_range, 2)}% -> {ratio}"
 
-    # consecutive days counter 
-    streaks = []
-    total_counter = 0
-    for key in data:
-        value = data[key]
-        if value:
-            total_counter += 1
-        else:
-            streaks.append(total_counter)
-            total_counter = 0
+    # consecutive days overall
+    streaks = get_consecutives(data)
     
     stats["average streak"] = round( sum(streaks) / len(streaks) )
     stats["max streak"] = max(streaks)
