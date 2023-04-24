@@ -109,7 +109,7 @@ def stats(data):
     # totals
     total = len(data)
     stats["total days"] = total
-    stats["good days"] = good_over_range(data, total)
+    stats["good days"] = good_over_range(data, total) #! if there's a hole between dates it counts less days
     stats["bad days"] = stats["total days"] - stats["good days"]
 
     # good days over a time range # TODO put time ranges in a config file
