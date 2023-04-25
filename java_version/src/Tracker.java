@@ -80,21 +80,29 @@ public class Tracker {
 	};
 	
 	private List<LocalDate> totalGoodDays() {
-		return db.keySet().stream()
-			.filter( entry -> db.get(entry) )
-			.sorted( ldc )
-			.collect( Collectors.toList() );
+		return goodDaysOverRange(
+				earliestDayDistance()
+		);
 	}
 	
 	private List<LocalDate> goodDaysOverRange(int days) {
-		List<LocalDate> goodDays = totalGoodDays();
-		int lenght = goodDays.size(), subListStart = lenght - days;
-		if (subListStart > 0 ) return goodDays; 
-		return goodDays.subList(subListStart, lenght - 1);
+		LocalDate base = getTodayDate().minusDays(days);
+		return db.keySet().stream()
+				.filter( entry -> db.get(entry) )
+				.filter( entry -> entry.isAfter(base))
+				.sorted( ldc )
+				.collect( Collectors.toList() );
 	}
 	
-	private List<Integer> getStreaks() {
-		List<LocalDate> goodDays = goodDaysOverRange( db.keySet().size() );
+	private int earliestDayDistance() {
+		return (int) db.keySet().stream().min(ldc).orElseThrow()
+				.until(getTodayDate(), ChronoUnit.DAYS);
+	}
+	
+	private List<Integer> getConsecutives() {
+		List<LocalDate> goodDays = goodDaysOverRange(
+				earliestDayDistance()
+		);
 		List<Integer> ret = new ArrayList<>();
 
 		if (goodDays.size() < 2) {
