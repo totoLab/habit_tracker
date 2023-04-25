@@ -13,11 +13,8 @@ public class Tracker {
 	private File filePath;
 	
 	private enum UIOption { today, print, stats, backup, exit }
-	private enum TimeRanges { total, month6, week12, week8, week4, week2 }
 
 	int MAX_LENGHT_AFTER_PADDING = 9;
-	private final int WEEK = 7;
-	private final int MONTH = WEEK * 4;
 
 
 	public Tracker(String path) {
@@ -200,7 +197,7 @@ public class Tracker {
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
-		
+
 		Supplier<Stream<LocalDate>> dates = () -> db.keySet().stream();
 		LocalDate current = dates.get().min(ldc).orElseThrow().withDayOfMonth(1);
 		LocalDate max = dates.get().max(ldc).orElseThrow();
@@ -261,14 +258,5 @@ public class Tracker {
 		return s + "\s".repeat(padding);
 	}
 	
-	public static void main(String[] args) throws FileAlreadyExistsException {
-		Tracker t = new Tracker("data.json");
-		LocalDate date = LocalDate.now();
-		for (int i = 0; i <= 366; i++) {
-			t.fillDay(date, (Math.random() < 0.5) ? true : false);
-			date = date.plusDays(1);
-		}
-		System.out.println(t.toString());
-	}
 }
 
