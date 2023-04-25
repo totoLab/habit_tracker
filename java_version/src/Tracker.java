@@ -1,6 +1,7 @@
 import java.util.*;
 import java.util.function.*;
 import java.util.stream.*;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.*;
 import java.nio.file.FileAlreadyExistsException;
 import java.time.*; 
@@ -17,28 +18,43 @@ public class Tracker {
 	private final int WEEK = 7;
 	private final int MONTH = WEEK * 4;
 
-	public Tracker(String path) throws FileAlreadyExistsException {
+
+	public Tracker(String path) {
 		File filePath = new File(path);
 		if (filePath.exists()) {
-			throw new FileAlreadyExistsException(path);
+			this.filePath = filePath;
+			db = restore(filePath);
 		} else {
 			this.filePath = filePath;
+			db = new TreeMap<>();
 		}
-		db = new TreeMap<>();
+		
 	}
 	
 	public TreeMap<LocalDate, Boolean> getDb() {
 		return new TreeMap<>(db);
 	}
 	
-	public void save() {
-		// TODO Auto-generated method stub
-
+	public void save(File file) {
+		ObjectMapper mapper = new ObjectMapper(); // create once, reuse
+		try {
+			mapper.writeValue(file, new TreeMap<String, Double>());
+		} catch (IOException e) {
+			e.printStackTrace();
+			System.err.println("No file found");
+		}
 	}
 	
-	public void restore() { // TreeMap<Date, Boolean> 
-		// TODO Auto-generated method stub
-
+	public TreeMap<LocalDate, Boolean> restore(File file) { // TreeMap<Date, Boolean> 
+		ObjectMapper mapper = new ObjectMapper(); // create once, reuse
+		TreeMap<LocalDate, Boolean> value = null;
+		try {
+			value = mapper.readValue(file, TreeMap.class);
+		} catch (IOException e) {
+			e.printStackTrace();
+			System.err.println("No file found");
+		}
+		return value;
 	}
 	
 	private void fillDay(LocalDate day, boolean value) {
