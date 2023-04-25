@@ -131,26 +131,44 @@ public class Tracker {
 		stats.put("good days", (double) totalGoodDays().size());
 		stats.put("bad days",  (double) stats.get("total") - stats.get("good days"));
 		
-		// TODO: good days over different ranges (enum TimeRanges)
-		
+		int maxTimeRange = earliestDayDistance();
+		for(TimeRange tr : TimeRange.values()) {
+			TimeRangeParser trp = new TimeRangeParser(tr, stats.get("total").intValue());
+			String descriptor = trp.getIterations() + trp.getType();
+			int time = trp.getValue();
+			if (time <= maxTimeRange) {
+				int goodDays = goodDaysOverRange(time).size();
+				stats.put(
+					descriptor + " good/bad ratio",
+					(double) goodDays * 100 / time
+				);
+				// TODO: add comparison string "(good days, bad days)"
+			}
+		}
 		
 		// streaks
-		Supplier<Stream<Integer>> streaks = () -> getStreaks().stream();
+		Supplier<Stream<Integer>> consecutives = () -> getConsecutives().stream();
 		stats.put(
 			"average streak",
-			(double) streaks.get().mapToInt(o->o).sum() / streaks.get().count()
+			(double) consecutives.get().mapToInt(o->o).sum() / consecutives.get().count()
 		);
 		stats.put(
 			"max streak",
-			(double) streaks.get().mapToInt(e -> e).max().orElseThrow());
+			(double) consecutives.get().mapToInt(e -> e).max().orElseThrow());
 		
 		return statsMapToString(stats);
 	}
 	
 	private String statsMapToString(HashMap<String, Double> stats) {
 		StringBuilder sb = new StringBuilder();
-		System.out.println("not implemented");
-		System.exit(1);
+		sb.append("------------ Stats ------------\n");
+		for (String field : stats.keySet()) {
+			sb.append(field);
+			sb.append(": ");
+			sb.append(stats.get(field));
+			sb.append("\n");
+		}
+		
 		return sb.toString();
 	}
 	
