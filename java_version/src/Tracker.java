@@ -19,11 +19,10 @@ public class Tracker {
 
 	public Tracker(String path) {
 		File filePath = new File(path);
+		this.filePath = filePath;
 		if (filePath.exists()) {
-			this.filePath = filePath;
 			db = restore(filePath);
 		} else {
-			this.filePath = filePath;
 			db = new TreeMap<>();
 		}
 		
