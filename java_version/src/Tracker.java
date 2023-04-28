@@ -216,7 +216,7 @@ public class Tracker {
 		LocalDate current = dates.get().min(ldc).orElseThrow().withDayOfMonth(1);
 		LocalDate max = dates.get().max(ldc).orElseThrow();
 		
-		while ( !current.equals(max) ) {
+		while ( !current.equals(max.plusDays(1)) ) {
 			if (current.getDayOfMonth() == 1) {
 				sb.append("\n");
 				addSpaces(sb, MAX_LENGHT_AFTER_PADDING);
