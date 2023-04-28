@@ -212,7 +212,10 @@ public class Tracker {
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
 
-		Supplier<Stream<LocalDate>> dates = () -> db.keySet().stream();
+		Set<LocalDate> keys = db.keySet();
+		if (keys.size() < 1) return "Empty database";
+		
+		Supplier<Stream<LocalDate>> dates = () -> keys.stream();
 		LocalDate current = dates.get().min(ldc).orElseThrow().withDayOfMonth(1);
 		LocalDate max = dates.get().max(ldc).orElseThrow();
 		
