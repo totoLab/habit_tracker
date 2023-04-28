@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.*;
 import java.nio.file.FileAlreadyExistsException;
 import java.time.*;
+import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 
 public class Tracker {
@@ -44,16 +45,30 @@ public class Tracker {
 	
 	public TreeMap<LocalDate, Boolean> restore(File file) { // TreeMap<Date, Boolean> 
 		ObjectMapper mapper = new ObjectMapper(); // create once, reuse
-		TreeMap<LocalDate, Boolean> value = null;
+		TreeMap<String, Boolean> value = null;
 		try {
 			value = mapper.readValue(file, TreeMap.class);
 		} catch (IOException e) {
 			e.printStackTrace();
 			System.err.println("No file found");
 		}
-		return value;
+		return castStringToLocalDate(value);
 	}
 	
+	private TreeMap<LocalDate, Boolean> castStringToLocalDate(TreeMap<String, Boolean> value) {
+		
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+		formatter = formatter.withLocale( Locale.ITALIAN );
+		
+		TreeMap<LocalDate, Boolean> ret = new TreeMap<>();
+		for (String key : value.keySet()) {
+			LocalDate date = LocalDate.parse(key, formatter);
+			ret.put(date, value.get(key));
+		}
+		
+		return ret;
+	}
+
 	private void fillDay(LocalDate day, boolean value) {
 		if (db.containsKey(day)) {
 			throw new IllegalStateException("Value already exists");
