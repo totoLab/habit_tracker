@@ -13,7 +13,6 @@ public class Tracker {
 	private TreeMap<LocalDate, Boolean> db;
 	private File filePath;
 	
-	private enum UIOption { today, print, stats, backup, exit }
 	private static DateTimeFormatter globalFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd").withLocale( Locale.ITALIAN );
 
 	int MAX_LENGHT_AFTER_PADDING = 9;
@@ -36,10 +35,11 @@ public class Tracker {
 	
 	
 	// ------------ save / restore database ------------
-	public void save(File file) {
+	public void save() {
 		ObjectMapper mapper = new ObjectMapper(); // create once, reuse
 		try {
-			mapper.writeValue(file, new TreeMap<String, Double>());
+			mapper.writeValue(
+					filePath, new TreeMap<String, Double>());
 		} catch (IOException e) {
 			e.printStackTrace();
 			System.err.println("No file found");
@@ -167,7 +167,7 @@ public class Tracker {
 	}
 	
 	// ------------ statistics ------------
-	private String getStats() {		
+	public String getStats() {		
 		if (db.keySet().size() == 0) {
 			return "No data is filled in";
 		}
@@ -209,7 +209,7 @@ public class Tracker {
 	
 	private String statsMapToString(HashMap<String, Double> stats) {
 		StringBuilder sb = new StringBuilder();
-		sb.append("------------ Stats ------------\n");
+		// sb.append("------------ Stats ------------\n");
 		for (String field : stats.keySet()) {
 			sb.append(field);
 			sb.append(": ");
