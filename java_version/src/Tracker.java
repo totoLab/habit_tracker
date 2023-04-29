@@ -255,12 +255,24 @@ public class Tracker {
 		
 		Supplier<Stream<LocalDate>> dates = () -> keys.stream();
 		LocalDate current = dates.get().min(ldc).orElseThrow().withDayOfMonth(1);
+		boolean firstMonth = true;
 		LocalDate max = dates.get().max(ldc).orElseThrow();
 		
 		while ( !current.equals(max.plusDays(1)) ) {
 			if (current.getDayOfMonth() == 1) {
 				sb.append("\n");
-				addSpaces(sb, MAX_LENGHT_AFTER_PADDING);
+				
+				int month = current.getMonthValue();
+				if (firstMonth || month == 1) {
+					sb.append(
+							padStringLeft(
+									String.valueOf(current.getYear()), 
+									MAX_LENGHT_AFTER_PADDING)
+					);
+					firstMonth = false;
+				} else {
+					addSpaces(sb, MAX_LENGHT_AFTER_PADDING);
+				}
 				sb.append(" |\n");
 				sb.append(monthToString(current));
 				sb.append("\n");
