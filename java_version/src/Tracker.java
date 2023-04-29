@@ -14,6 +14,7 @@ public class Tracker {
 	private File filePath;
 	
 	private enum UIOption { today, print, stats, backup, exit }
+	private static DateTimeFormatter globalFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd").withLocale( Locale.ITALIAN );
 
 	int MAX_LENGHT_AFTER_PADDING = 9;
 
@@ -56,19 +57,21 @@ public class Tracker {
 	}
 	
 	private TreeMap<LocalDate, Boolean> castStringToLocalDate(TreeMap<String, Boolean> value) {
-		
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-		formatter = formatter.withLocale( Locale.ITALIAN );
-		
+			
 		TreeMap<LocalDate, Boolean> ret = new TreeMap<>();
 		for (String key : value.keySet()) {
-			LocalDate date = LocalDate.parse(key, formatter);
+			LocalDate date = LocalDate.parse(key, globalFormatter);
 			ret.put(date, value.get(key));
 		}
 		
 		return ret;
 	}
 
+	void fillDay(String day, boolean value) {
+		LocalDate date = LocalDate.parse(day, globalFormatter);
+		fillDay(date, value);
+	}
+	
 	private void fillDay(LocalDate day, boolean value) {
 		if (db.containsKey(day)) {
 			throw new IllegalStateException("Value already exists");
