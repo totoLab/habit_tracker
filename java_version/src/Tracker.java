@@ -34,6 +34,8 @@ public class Tracker {
 		return new TreeMap<>(db);
 	}
 	
+	
+	// ------------ save / restore database ------------
 	public void save(File file) {
 		ObjectMapper mapper = new ObjectMapper(); // create once, reuse
 		try {
@@ -67,6 +69,7 @@ public class Tracker {
 		return ret;
 	}
 
+	// ------------ new entries ------------
 	void fillDay(String day, boolean value) {
 		LocalDate date = LocalDate.parse(day, globalFormatter);
 		fillDay(date, value);
@@ -79,15 +82,69 @@ public class Tracker {
 		db.put(day, value);
 	}
 	
+	void fillToday(boolean value) {
+		LocalDate today = getTodayDate();
+		fillDay(today, value);		
+	}
+	
+	// ------------ dates ------------
+	private Comparator<LocalDate> ldc = (o1, o2) -> {
+		if ( o1.isAfter(o2) ) return 1;
+		else if ( o1.isBefore(o2) ) return -1;
+		return 0;
+	};
+	
 	private LocalDate getTodayDate() {
 		return LocalDate.now();
 	}
 	
-	private void fillToday(boolean value) {
-		LocalDate today = getTodayDate();
-		fillDay(today, value);
-
+	private int daysOfTheMonth(LocalDate date) {
+		return date.getMonth()
+				.length( date.isLeapYear() );
 	}
+	
+	private List<LocalDate> totalGoodDays() {
+		return goodDaysOverRange(
+				earliestDayDistance()
+				);
+	}
+	
+	private List<LocalDate> goodDaysOverRange(int days) {
+		LocalDate base = getTodayDate().minusDays(days);
+		return db.keySet().stream()
+				.filter( entry -> db.get(entry) )
+				.filter( entry -> entry.isAfter(base))
+				.sorted( ldc )
+				.collect( Collectors.toList() );
+	}
+	
+	private List<Integer> getConsecutives() {
+		List<LocalDate> goodDays = goodDaysOverRange(
+				earliestDayDistance()
+				);
+		List<Integer> ret = new ArrayList<>();
+		
+		if (goodDays.size() < 2) {
+			ret.add(goodDays.size());
+			return ret;
+		}
+		
+		Iterator<LocalDate> it = goodDays.iterator();
+		LocalDate current = it.next();
+		int count = 0;
+		while (it.hasNext()) {
+			LocalDate next = it.next();
+			if (current.plusDays(1).equals(next)) {
+				count += 1;
+			} else {
+				ret.add(count);
+				count = 0;
+			}
+			current = next;
+		}
+		return ret;
+	}
+
 	
 	private List<Integer> yearSearchSpace() {
 		Set<LocalDate> keys = db.keySet();
@@ -104,60 +161,12 @@ public class Tracker {
 		return yearRange;
 	}
 	
-	private Comparator<LocalDate> ldc = (o1, o2) -> {
-		if ( o1.isAfter(o2) ) return 1;
-		else if ( o1.isBefore(o2) ) return -1;
-		return 0;
-	};
-	
-	private List<LocalDate> totalGoodDays() {
-		return goodDaysOverRange(
-				earliestDayDistance()
-		);
-	}
-	
-	private List<LocalDate> goodDaysOverRange(int days) {
-		LocalDate base = getTodayDate().minusDays(days);
-		return db.keySet().stream()
-				.filter( entry -> db.get(entry) )
-				.filter( entry -> entry.isAfter(base))
-				.sorted( ldc )
-				.collect( Collectors.toList() );
-	}
-	
 	private int earliestDayDistance() {
 		return (int) db.keySet().stream().min(ldc).orElseThrow()
 				.until(getTodayDate(), ChronoUnit.DAYS);
 	}
 	
-	private List<Integer> getConsecutives() {
-		List<LocalDate> goodDays = goodDaysOverRange(
-				earliestDayDistance()
-		);
-		List<Integer> ret = new ArrayList<>();
-
-		if (goodDays.size() < 2) {
-			ret.add(goodDays.size());
-			return ret;
-		}
-
-		Iterator<LocalDate> it = goodDays.iterator();
-		LocalDate current = it.next();
-		int count = 0;
-		while (it.hasNext()) {
-			LocalDate next = it.next();
-			if (current.plusDays(1).equals(next)) {
-				count += 1;
-			} else {
-				ret.add(count);
-				count = 0;
-			}
-			current = next;
-		}
-		return ret;
-	}
-		
-	
+	// ------------ statistics ------------
 	private String getStats() {		
 		if (db.keySet().size() == 0) {
 			return "No data is filled in";
@@ -211,10 +220,36 @@ public class Tracker {
 		return sb.toString();
 	}
 	
+	// ------------ string manipulation ------------
+	private String monthToString(LocalDate date) {
+		StringBuilder sb = new StringBuilder();
+		Month month = date.getMonth();
+		sb.append(padStringLeft(month.toString(), MAX_LENGHT_AFTER_PADDING));
+		sb.append(" | ");
+		for (int day = 1; day <= daysOfTheMonth(date); day++) {
+			sb.append(padStringLeft(String.valueOf(day), 2));
+			addSpaces(sb, 1);
+		}
+		return sb.toString();
+	}
+	
+	private void addSpaces(StringBuilder sb, int padding) {
+		sb.append("\s".repeat(padding));
+	}
+	
+	private String padStringLeft(String s, int lenght) {
+		int n = s.length();
+		int padding = lenght - n;
+		if (padding < 0 ) throw new IllegalArgumentException("Too little max lenght");
+		return s + "\s".repeat(padding);
+	}
+	
+	
+	// ------------ object methods ------------
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
-
+		
 		Set<LocalDate> keys = db.keySet();
 		if (keys.size() < 1) return "Empty database";
 		
@@ -240,23 +275,6 @@ public class Tracker {
 		return sb.toString();
 	}
 	
-	private int daysOfTheMonth(LocalDate date) {
-		return date.getMonth()
-				.length( date.isLeapYear() );
-	}
-	
-	private String monthToString(LocalDate date) {
-		StringBuilder sb = new StringBuilder();
-		Month month = date.getMonth();
-		sb.append(padStringLeft(month.toString(), MAX_LENGHT_AFTER_PADDING));
-		sb.append(" | ");
-		for (int day = 1; day <= daysOfTheMonth(date); day++) {
-			sb.append(padStringLeft(String.valueOf(day), 2));
-			addSpaces(sb, 1);
-		}
-		return sb.toString();
-	}
-	
 	private void checkAndAddEmoji(StringBuilder sb, LocalDate date) {
 		if (db.containsKey(date)) {
 			if (db.get(date)) sb.append("✅");
@@ -265,17 +283,6 @@ public class Tracker {
 			addSpaces(sb, 2);
 		}
 		addSpaces(sb, 1);
-	}
-	
-	private void addSpaces(StringBuilder sb, int padding) {
-		sb.append("\s".repeat(padding));
-	}
-	
-	private String padStringLeft(String s, int lenght) {
-		int n = s.length();
-		int padding = lenght - n;
-		if (padding < 0 ) throw new IllegalArgumentException("Too little max lenght");
-		return s + "\s".repeat(padding);
 	}
 	
 }
