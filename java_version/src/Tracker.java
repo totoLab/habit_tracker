@@ -3,7 +3,6 @@ import java.util.function.*;
 import java.util.stream.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.*;
-import java.nio.file.FileAlreadyExistsException;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
@@ -39,7 +38,7 @@ public class Tracker {
 		ObjectMapper mapper = new ObjectMapper(); // create once, reuse
 		try {
 			mapper.writeValue(
-					filePath, new TreeMap<String, Double>());
+					filePath, db);
 		} catch (IOException e) {
 			e.printStackTrace();
 			System.err.println("No file found");
@@ -77,7 +76,8 @@ public class Tracker {
 	
 	private void fillDay(LocalDate day, boolean value) {
 		if (db.containsKey(day)) {
-			throw new IllegalStateException("Value already exists");
+			System.out.println("Overwriting value for date " + day);
+			// throw new IllegalStateException("Value already exists");
 		}
 		db.put(day, value);
 	}
