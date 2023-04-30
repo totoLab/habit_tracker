@@ -1,0 +1,1 @@
+public enum MenuOption {today, print, stats, exit};

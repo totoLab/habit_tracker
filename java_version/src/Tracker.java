@@ -94,7 +94,7 @@ public class Tracker {
 		return 0;
 	};
 	
-	private LocalDate getTodayDate() {
+	private static LocalDate getTodayDate() {
 		return LocalDate.now();
 	}
 	
@@ -295,6 +295,35 @@ public class Tracker {
 			addSpaces(sb, 2);
 		}
 		addSpaces(sb, 1);
+	}
+	
+	public static void main(String[] args) {
+		if (args.length < 1) throw new IllegalArgumentException("no argument were given");
+		String filepath = args[0];
+		Tracker tracker = new Tracker(filepath);
+
+		while (true) {
+			UI.displayMainMenu();
+			MenuOption choice = UI.mainMenuChoice();
+
+			switch (choice) {
+			case today:
+				tracker.fillToday( UI.yesOrNo( Tracker.getTodayDate().toString() ) );
+				break;
+			case stats:
+				System.out.println("Tracker statistics:\n" + tracker.getStats());
+				break;
+			case print:
+				System.out.println("Tracker calendar:\n" + tracker.toString());
+				break;
+			case exit:
+				System.out.println("Saving current changes...");
+				tracker.save();
+				System.out.println("Correctly saved changes.");
+				System.out.println("Exiting...");
+				System.exit(0);
+			}
+		}
 	}
 	
 }
