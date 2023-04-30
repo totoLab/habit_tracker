@@ -53,6 +53,7 @@ public class Tracker {
 		} catch (IOException e) {
 			e.printStackTrace();
 			System.err.println("No file found");
+			System.exit(1);
 		}
 		return castStringToLocalDate(value);
 	}
