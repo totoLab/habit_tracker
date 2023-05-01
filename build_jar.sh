@@ -1,0 +1,1 @@
+mvn clean package --file java_version/pom.xml
