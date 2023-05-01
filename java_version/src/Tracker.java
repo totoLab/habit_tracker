@@ -142,6 +142,8 @@ public class Tracker {
 			}
 			current = next;
 		}
+		count++;
+		ret.add(count);
 		return ret;
 	}
 
