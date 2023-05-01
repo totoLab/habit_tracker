@@ -3,6 +3,7 @@ import java.util.function.*;
 import java.util.stream.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.*;
+import java.text.DecimalFormat;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
@@ -171,6 +172,8 @@ public class Tracker {
 	}
 	
 	// ------------ statistics ------------
+    DecimalFormat formatter = new DecimalFormat("##.00");
+    
 	public String getStats() {		
 		if (db.keySet().size() == 0) {
 			return "No data is filled in";
@@ -196,24 +199,24 @@ public class Tracker {
 			int time = trp.getValue();
 			if (time <= maxTimeRange) {
 				int goodDays = goodDaysOverRange(time).size();
-				
 				Double ratio = (double) goodDays * 100 / time;
+				
 				int badDays = time - goodDays;
 				String comparison = "(" + goodDays +"," + badDays + ")";
 				
 				stats.add(mapLike(
 					descriptor + " good/bad ratio",
-					ratio.toString()
+					formatter.format(ratio) + "% " + comparison
 				));
 			}
 		}
 		
 		// streaks
 		Supplier<Stream<Integer>> consecutives = () -> getConsecutives().stream();
-		Long average = consecutives.get().mapToInt(o->o).sum() / consecutives.get().count();
+		Double average = (double) consecutives.get().mapToInt(o->o).sum() / consecutives.get().count();
 		stats.add(mapLike(
 			"average streak",
-			average.toString()
+			formatter.format(average)
 		));
 		Integer max = consecutives.get().mapToInt(o->o).max().orElseThrow();
 		stats.add(mapLike(
