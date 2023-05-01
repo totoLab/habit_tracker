@@ -229,7 +229,6 @@ public class Tracker {
 	
 	private String statsListToString(List<String> stats) {
 		StringBuilder sb = new StringBuilder();
-		// sb.append("------------ Stats ------------\n");
 		for (String field : stats) {
 			sb.append(field);
 			sb.append("\n");
