@@ -32,10 +32,13 @@ public class UI {
 	}
 
 	static void displayMainMenu() {
+		StringBuilder sb = new StringBuilder();
+		sb.append("Menu:\n");
 		MenuOption[] options =  MenuOption.values();
 		for (int i = 0; i < options.length; i++) {
-			System.out.println((i + 1) + ") " + options[i]);
+			sb.append((i + 1) + ") " + options[i] + "\n");
 		}
+		System.out.println(sb.toString().strip());
 	}
 	
 }
