@@ -135,9 +135,8 @@ public class Tracker {
 		int count = 0;
 		while (it.hasNext()) {
 			LocalDate next = it.next();
-			if (current.plusDays(1).equals(next)) {
-				count += 1;
-			} else {
+			count += 1;
+			if (!current.plusDays(1).equals(next)) {
 				ret.add(count);
 				count = 0;
 			}
