@@ -176,39 +176,53 @@ public class Tracker {
 			return "No data is filled in";
 		}
 		
-		HashMap<String, Double> stats = new HashMap<>();
+		List<String> stats = new ArrayList<>();
 		
 		// totals
-		stats.put("total",	   (double) db.keySet().size());
-		stats.put("good days", (double) totalGoodDays().size());
-		stats.put("bad days",  (double) stats.get("total") - stats.get("good days"));
+		Integer total =  db.keySet().size();
+		stats.add(mapLike("total", total.toString()));
 		
+		Integer good = totalGoodDays().size();
+		stats.add(mapLike("good days", good.toString()));
+		
+		Integer bad = total - good;
+		stats.add(mapLike("bad days", bad.toString()));
+
+		// good over ranges
 		int maxTimeRange = earliestDayDistance();
 		for(TimeRange tr : TimeRange.values()) {
-			TimeRangeParser trp = new TimeRangeParser(tr, stats.get("total").intValue());
+			TimeRangeParser trp = new TimeRangeParser(tr, total);
 			String descriptor = trp.getIterations() + trp.getType();
 			int time = trp.getValue();
 			if (time <= maxTimeRange) {
 				int goodDays = goodDaysOverRange(time).size();
-				stats.put(
+				
+				Double ratio = (double) goodDays * 100 / time;
+				stats.add(mapLike(
 					descriptor + " good/bad ratio",
-					(double) goodDays * 100 / time
-				);
+					ratio.toString()
+				));
 				// TODO: add comparison string "(good days, bad days)"
 			}
 		}
 		
 		// streaks
 		Supplier<Stream<Integer>> consecutives = () -> getConsecutives().stream();
-		stats.put(
+		Long average = consecutives.get().mapToInt(o->o).sum() / consecutives.get().count();
+		stats.add(mapLike(
 			"average streak",
-			(double) consecutives.get().mapToInt(o->o).sum() / consecutives.get().count()
-		);
-		stats.put(
+			average.toString()
+		));
+		Integer max = consecutives.get().mapToInt(o->o).max().orElseThrow();
+		stats.add(mapLike(
 			"max streak",
-			(double) consecutives.get().mapToInt(e -> e).max().orElseThrow());
-		
-		return statsMapToString(stats);
+			max.toString()
+		));
+		return statsListToString(stats);
+	}
+	
+	private String mapLike(String key, String value) {
+		return key + ": " + value;
 	}
 	
 	private String statsMapToString(HashMap<String, Double> stats) {
