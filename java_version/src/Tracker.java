@@ -198,11 +198,13 @@ public class Tracker {
 				int goodDays = goodDaysOverRange(time).size();
 				
 				Double ratio = (double) goodDays * 100 / time;
+				int badDays = time - goodDays;
+				String comparison = "(" + goodDays +"," + badDays + ")";
+				
 				stats.add(mapLike(
 					descriptor + " good/bad ratio",
 					ratio.toString()
 				));
-				// TODO: add comparison string "(good days, bad days)"
 			}
 		}
 		
