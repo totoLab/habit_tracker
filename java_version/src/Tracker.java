@@ -225,19 +225,16 @@ public class Tracker {
 		return key + ": " + value;
 	}
 	
-	private String statsMapToString(HashMap<String, Double> stats) {
+	private String statsListToString(List<String> stats) {
 		StringBuilder sb = new StringBuilder();
 		// sb.append("------------ Stats ------------\n");
-		for (String field : stats.keySet()) {
+		for (String field : stats) {
 			sb.append(field);
-			sb.append(": ");
-			sb.append(stats.get(field));
 			sb.append("\n");
 		}
 		
 		return sb.toString();
 	}
-	
 	// ------------ string manipulation ------------
 	private String monthToString(LocalDate date) {
 		StringBuilder sb = new StringBuilder();
