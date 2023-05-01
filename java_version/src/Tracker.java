@@ -22,8 +22,10 @@ public class Tracker {
 		this.filePath = filePath;
 		if (filePath.exists()) {
 			db = restore(filePath);
+			System.out.println("Restoring tracker from " + path);
 		} else {
 			db = new TreeMap<>();
+			System.out.println("Creating new tracker " + path);
 		}
 		
 	}
