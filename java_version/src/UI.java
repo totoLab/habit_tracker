@@ -17,7 +17,7 @@ public class UI {
 				}
 			} catch (InputMismatchException e) {
 				System.out.println("Invalid choice, please enter a number");
-				// input.nextLine();
+				input.nextLine();
 			}
 		}
 	}
