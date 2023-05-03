@@ -14,7 +14,6 @@ To build the project and download the dependencies, the following script uses `m
 
 ```
 ./habit_tracker.sh path_of_tracker.json
-
 ```
 
 - To create a new tracker insert the path of the file you want to save it to as `path_of_tracker.json`. <br>
