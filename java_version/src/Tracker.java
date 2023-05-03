@@ -338,12 +338,14 @@ public class Tracker {
 			case print:
 				System.out.println("Tracker calendar:\n" + tracker.toString());
 				break;
-			case exit:
+			case exitSaving:
 				System.out.println("Saving current changes...");
 				tracker.save();
 				System.out.println("Correctly saved changes.");
+			case exitNotSaving:
 				System.out.println("Exiting...");
 				System.exit(0);
+				break;
 			}
 		}
 	}
