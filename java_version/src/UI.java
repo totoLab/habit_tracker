@@ -1,4 +1,5 @@
 import java.util.*;
+import java.time.*;
 public class UI {
 	
 	static MenuOption mainMenuChoice() {
@@ -39,6 +40,43 @@ public class UI {
 			sb.append((i + 1) + ") " + options[i] + "\n");
 		}
 		System.out.println(sb.toString().strip());
+	}
+	
+	static String enterDay() {
+		StringBuilder sb = new StringBuilder();
+		Integer year = enterNumber(1970, 4000, "year");
+		sb.append(year.toString());
+		sb.append("-");
+		Integer month = enterNumber(1, 12, "month");
+		sb.append( (month < 10) ?
+				"0" + month.toString() :
+				month.toString()
+		);
+		sb.append("-");
+
+		LocalDate test = LocalDate.parse(sb.toString() + "01", Tracker.globalFormatter);
+		int maxDays = test.lengthOfMonth();
+		Integer day = enterNumber( 1, maxDays, "day" );
+		test = test.withDayOfMonth(day);
+		return test.toString();
+	}
+	
+	private static Integer enterNumber(int first, int last, String prompt) {
+		Scanner input = new Scanner(System.in);
+		while (true) {
+			System.out.print("Enter your choice for the " + prompt + ": ");
+			try {
+				int choice = input.nextInt();
+				if (choice >= first && choice <= last) {
+					return choice;
+				} else {
+					System.out.println("Invalid choice, please enter a number between " + first + " and " + last);
+				}
+			} catch (InputMismatchException e) {
+				System.out.println("Invalid choice, please enter a number");
+				input.nextLine();
+			}
+		}
 	}
 	
 }

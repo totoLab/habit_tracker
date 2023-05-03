@@ -13,7 +13,7 @@ public class Tracker {
 	private TreeMap<LocalDate, Boolean> db;
 	private File filePath;
 	
-	private static DateTimeFormatter globalFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd").withLocale( Locale.ITALIAN );
+	static DateTimeFormatter globalFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd").withLocale( Locale.ITALIAN );
 
 	int MAX_LENGHT_AFTER_PADDING = 9;
 
@@ -329,6 +329,9 @@ public class Tracker {
 			case today:
 				tracker.fillToday( UI.yesOrNo( Tracker.getTodayDate().toString() ) );
 				break;
+			case fillDay:
+				String userDate = UI.enterDay();
+				tracker.fillDay(userDate, UI.yesOrNo( userDate ));
 			case stats:
 				System.out.println("Tracker statistics:\n" + tracker.getStats());
 				break;

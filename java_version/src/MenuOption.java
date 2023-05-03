@@ -1,1 +1,1 @@
-public enum MenuOption {today, print, stats, exit};
+public enum MenuOption {today, fillDay, print, stats, exit};
