@@ -332,6 +332,7 @@ public class Tracker {
 			case fillDay:
 				String userDate = UI.enterDay();
 				tracker.fillDay(userDate, UI.yesOrNo( userDate ));
+				break;
 			case stats:
 				System.out.println("Tracker statistics:\n" + tracker.getStats());
 				break;
