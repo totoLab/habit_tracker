@@ -61,12 +61,12 @@ public class Tracker {
 		return castStringToLocalDate(value);
 	}
 	
-	private TreeMap<LocalDate, Boolean> castStringToLocalDate(TreeMap<String, Boolean> value) {
+	private TreeMap<LocalDate, Boolean> castStringToLocalDate(TreeMap<String, Boolean> toCast) {
 			
 		TreeMap<LocalDate, Boolean> ret = new TreeMap<>();
-		for (String key : value.keySet()) {
+		for (String key : toCast.keySet()) {
 			LocalDate date = LocalDate.parse(key, globalFormatter);
-			ret.put(date, value.get(key));
+			ret.put(date, toCast.get(key));
 		}
 		
 		return ret;
