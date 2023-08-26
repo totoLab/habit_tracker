@@ -109,7 +109,7 @@ public class Tracker {
 	
 	private List<LocalDate> totalGoodDays() {
 		return goodDaysOverRange(
-				earliestDayDistance()
+				earliestDayDistance() - 1
 				);
 	}
 	
@@ -134,7 +134,7 @@ public class Tracker {
 	
 	private List<Integer> getConsecutives() {
 		List<LocalDate> goodDays = goodDaysOverRange(
-				earliestDayDistance()
+				earliestDayDistance() - 1
 				);
 		List<Integer> ret = new ArrayList<>();
 		
@@ -213,7 +213,7 @@ public class Tracker {
 			String descriptor = trp.getIterations() + trp.getType();
 			int time = trp.getValue();
 			if (time <= maxTimeRange) {
-				int goodDays = goodDaysOverRange(time).size();
+				int goodDays = goodDaysOverRange(time - 1).size();
 				Double ratio = (double) goodDays * 100 / time;
 				
 				int badDays = time - goodDays;
