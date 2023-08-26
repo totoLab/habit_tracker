@@ -113,13 +113,23 @@ public class Tracker {
 				);
 	}
 	
-	private List<LocalDate> goodDaysOverRange(int days) {
-		LocalDate base = getTodayDate().minusDays(days);
+	/*
+	 * @return list of good days from date passed as parameter
+	 */
+	private List<LocalDate> goodDaysOverRange(LocalDate base, LocalDate upper) {
 		return db.keySet().stream()
 				.filter( entry -> db.get(entry) )
-				.filter( entry -> entry.isAfter(base))
+				.filter( entry -> entry.isEqual(base) || ( entry.isAfter(base) && entry.isBefore(upper.plusDays(1)) ))
 				.sorted( ldc )
 				.collect( Collectors.toList() );
+	}
+	
+	/*
+	 * @return list of good days from today's date
+	 */
+	private List<LocalDate> goodDaysOverRange(int days) {
+		LocalDate base = getTodayDate().minusDays(days);
+		return goodDaysOverRange(base, getTodayDate());
 	}
 	
 	private List<Integer> getConsecutives() {
@@ -150,6 +160,11 @@ public class Tracker {
 		return ret;
 	}
 
+	private int goodDaysPerMonth(LocalDate date) {
+		int days = date.lengthOfMonth();
+		LocalDate base = date.withDayOfMonth(1);
+		return goodDaysOverRange(base, base.plusDays(days - 1)).size();
+	}
 	
 	private List<Integer> yearSearchSpace() {
 		Set<LocalDate> keys = db.keySet();
@@ -295,7 +310,14 @@ public class Tracker {
 				sb.append(" |\n");
 				sb.append(monthToString(current));
 				sb.append("\n");
-				addSpaces(sb, MAX_LENGHT_AFTER_PADDING);
+				
+				int goodOfMonth = goodDaysPerMonth(current);
+				sb.append(
+						padStringLeft(
+								" " + goodOfMonth + "/" + current.lengthOfMonth(),
+								MAX_LENGHT_AFTER_PADDING)
+				);
+				
 				sb.append(" | ");
 			}
 			checkAndAddEmoji(sb, current);
