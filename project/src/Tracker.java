@@ -186,6 +186,11 @@ public class Tracker {
 				.until(getTodayDate(), ChronoUnit.DAYS);
 	}
 	
+	private int latestDayDistance() {
+		return (int) db.keySet().stream().max(ldc).orElseThrow()
+				.until(getTodayDate(), ChronoUnit.DAYS);
+	}
+	
 	// ------------ statistics ------------
     DecimalFormat formatter = new DecimalFormat("##.00");
     
@@ -228,8 +233,12 @@ public class Tracker {
 		
 		// streaks
 		Supplier<Stream<Integer>> consecutives = () -> getConsecutives().stream();
-		Integer current = consecutives.get().mapToInt(o->o)
-				.reduce((first, second) -> second).getAsInt(); // recursively dumping "first" to get the last element
+		Integer current = 0;
+		if (goodDaysOverRange(latestDayDistance()).size() >= 1) {
+			current = consecutives.get().mapToInt(o->o)
+				.reduce((first, second) -> second) // recursively dumping "first" to get the last element
+				.getAsInt();
+		}
 		stats.add(mapLike(
 			"current streak",
 			current.toString()
