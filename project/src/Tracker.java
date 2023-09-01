@@ -228,7 +228,7 @@ public class Tracker {
 		
 		// streaks
 		Supplier<Stream<Integer>> consecutives = () -> getConsecutives().stream();
-		Double average = (double) consecutives.get().mapToInt(o->o).sum() / consecutives.get().count();
+		Double average = (double) consecutives.get().mapToInt(o->o).average().getAsDouble();
 		stats.add(mapLike(
 			"average streak",
 			formatter.format(average)
