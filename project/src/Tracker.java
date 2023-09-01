@@ -228,6 +228,12 @@ public class Tracker {
 		
 		// streaks
 		Supplier<Stream<Integer>> consecutives = () -> getConsecutives().stream();
+		Integer current = consecutives.get().mapToInt(o->o)
+				.reduce((first, second) -> second).getAsInt(); // recursively dumping "first" to get the last element
+		stats.add(mapLike(
+			"current streak",
+			current.toString()
+		));
 		Double average = (double) consecutives.get().mapToInt(o->o).average().getAsDouble();
 		stats.add(mapLike(
 			"average streak",
