@@ -359,7 +359,7 @@ public class Tracker {
 	}
 	
 	public static void main(String[] args) {
-		if (args.length < 1) throw new IllegalArgumentException("no argument were given");
+		if (args.length < 1) throw new IllegalArgumentException("Not enough arguments, provide a filepath for the tracker.");
 		String filepath = args[0];
 		Tracker tracker = new Tracker(filepath);
 
