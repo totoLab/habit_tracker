@@ -21,6 +21,11 @@ public class Tracker {
 	public Tracker(String path) {
 		File filePath = new File(path);
 		this.filePath = filePath;
+		
+		if (!filePath.canWrite()) {
+			throw new IllegalArgumentException("File cannot be re/written, choose another path or execute with higher privileges.");
+		}
+		
 		if (filePath.exists()) {
 			db = restore(filePath);
 			System.out.println("Restoring tracker from " + path);
