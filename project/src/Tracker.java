@@ -17,7 +17,6 @@ public class Tracker {
 
 	int MAX_LENGHT_AFTER_PADDING = 9;
 
-
 	public Tracker(String path) {
 		File filePath = new File(path);
 		this.filePath = filePath;
@@ -39,7 +38,6 @@ public class Tracker {
 	public TreeMap<LocalDate, Boolean> getDb() {
 		return new TreeMap<>(db);
 	}
-	
 	
 	// ------------ save / restore database ------------
 	public void save() {
@@ -274,6 +272,7 @@ public class Tracker {
 		
 		return sb.toString();
 	}
+	
 	// ------------ string manipulation ------------
 	private String monthToString(LocalDate date) {
 		StringBuilder sb = new StringBuilder();
@@ -297,7 +296,6 @@ public class Tracker {
 		if (padding < 0 ) throw new IllegalArgumentException("Too little max lenght");
 		return s + "\s".repeat(padding);
 	}
-	
 	
 	// ------------ object methods ------------
 	@Override
