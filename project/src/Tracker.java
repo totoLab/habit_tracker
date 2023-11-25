@@ -251,6 +251,12 @@ public class Tracker {
 			"average streak",
 			formatter.format(average)
 		));
+		int[] orderedConsecutives = consecutives.get().mapToInt(o->o).sorted().toArray();
+		Integer median = orderedConsecutives[orderedConsecutives.length / 2];
+		stats.add(mapLike(
+			"median streak",
+			formatter.format(median)
+		));
 		Integer max = consecutives.get().mapToInt(o->o).max().orElseThrow();
 		stats.add(mapLike(
 			"max streak",
