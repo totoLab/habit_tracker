@@ -375,11 +375,16 @@ public class Tracker {
 
 			switch (choice) {
 			case today:
-				tracker.fillToday( UI.yesOrNo( Tracker.getTodayDate().toString() ) );
+				try {
+					tracker.fillToday( UI.yesOrNo( Tracker.getTodayDate().toString() ) );
+				} catch (QuitPrompt e) { }
 				break;
 			case fillDay:
-				String userDate = UI.enterDay();
-				tracker.fillDay(userDate, UI.yesOrNo( userDate ));
+				String userDate;
+				try {
+					userDate = UI.enterDay();
+					tracker.fillDay(userDate, UI.yesOrNo( userDate ));
+				} catch (QuitPrompt e) { }
 				break;
 			case stats:
 				System.out.println("Tracker statistics:\n" + tracker.getStats());

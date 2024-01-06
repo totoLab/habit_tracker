@@ -23,11 +23,12 @@ public class UI {
 		}
 	}
 
-	static boolean yesOrNo(String prompt) {
+	static boolean yesOrNo(String prompt) throws QuitPrompt {
 		Scanner input = new Scanner(System.in);
 		while (true) {
 			System.out.println(prompt + " " + "[y/n]");
 			String choice = input.next().toUpperCase();
+			if (choice.contains("Q")) throw new QuitPrompt();
 			return choice.contains("Y");
 		}
 	}
@@ -42,7 +43,7 @@ public class UI {
 		System.out.println(sb.toString().strip());
 	}
 	
-	static String enterDay() {
+	static String enterDay() throws QuitPrompt {
 		StringBuilder sb = new StringBuilder();
 		Integer year = enterNumber(1970, 4000, "year");
 		sb.append(year.toString());
@@ -61,18 +62,20 @@ public class UI {
 		return test.toString();
 	}
 	
-	private static Integer enterNumber(int first, int last, String prompt) {
+	private static Integer enterNumber(int first, int last, String prompt) throws QuitPrompt {
 		Scanner input = new Scanner(System.in);
 		while (true) {
 			System.out.print("Enter your choice for the " + prompt + ": ");
 			try {
-				int choice = input.nextInt();
+				String choiceStr = input.next();
+				if (choiceStr.toUpperCase().contains("Q")) throw new QuitPrompt();
+				int choice = Integer.parseInt(choiceStr);
 				if (choice >= first && choice <= last) {
 					return choice;
 				} else {
 					System.out.println("Invalid choice, please enter a number between " + first + " and " + last);
 				}
-			} catch (InputMismatchException e) {
+			} catch (NumberFormatException e) {
 				System.out.println("Invalid choice, please enter a number");
 				input.nextLine();
 			}
