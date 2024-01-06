@@ -322,6 +322,8 @@ public class Tracker {
 				
 				int month = current.getMonthValue();
 				if (firstMonth || month == 1) {
+					addSpaces(sb, MAX_LENGHT_AFTER_PADDING);
+					sb.append(" |\n");
 					sb.append(
 							padStringLeft(
 									String.valueOf(current.getYear()), 
